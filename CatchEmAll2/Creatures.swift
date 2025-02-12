@@ -12,17 +12,12 @@ class Creatures {
     private struct Returned: Codable {
         var count: Int
         var next: String // TODO: We want to change this to an optional
-        var results: [Result]
-    }
-    
-    struct Result: Codable, Hashable {
-        var name: String
-        var url: String // url for detail of pokemon
+        var results: [Creature]
     }
 
     var urlString = "https://pokeapi.co/api/v2/pokemon"
     var count = 0
-    var creaturesArray = [Result]()
+    var creaturesArray = [Creature]()
 
     
     func getData() async {
