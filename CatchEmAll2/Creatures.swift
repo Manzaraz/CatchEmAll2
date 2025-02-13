@@ -18,12 +18,14 @@ class Creatures {
     var urlString = "https://pokeapi.co/api/v2/pokemon"
     var count = 0
     var creaturesArray = [Creature]()
-
+    var isLoading = false
     
     func getData() async {
         print("🕸️ We're accesing the url \(urlString)")
+        isLoading = true
         guard let url = URL(string: urlString) else { // Create a URL
             print("😡ERROR: Could not create a URL from \(urlString)")
+            isLoading = false
             return
         }
         
@@ -33,15 +35,18 @@ class Creatures {
             // Try to decode JSON data into our own data structures
             guard let returned = try? JSONDecoder().decode(Returned.self, from: data) else {
                 print("✋🏼JSON ERROR: Could not decode returned JSON from data")
+                isLoading = false
                 return
             }
             Task { @MainActor in
                 self.count = returned.count
                 self.urlString = returned.next ?? ""
                 self.creaturesArray += returned.results
+                isLoading = false
             }
         } catch {
             print("🤬ERROR: Could not get data from \(urlString)")
+            isLoading = false
         }
     }
 }
