@@ -11,7 +11,7 @@ import Foundation
 class Creatures {
     private struct Returned: Codable {
         var count: Int
-        var next: String // TODO: We want to change this to an optional
+        var next: String?
         var results: [Creature]
     }
 
@@ -35,9 +35,11 @@ class Creatures {
                 print("✋🏼JSON ERROR: Could not decode returned JSON from data")
                 return
             }
-            self.count = returned.count
-            self.urlString = returned.next
-            self.creaturesArray = returned.results
+            Task { @MainActor in
+                self.count = returned.count
+                self.urlString = returned.next ?? ""
+                self.creaturesArray += returned.results
+            }
         } catch {
             print("🤬ERROR: Could not get data from \(urlString)")
         }

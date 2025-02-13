@@ -66,7 +66,6 @@ struct DetailView: View {
                         )
                             .font(.system(.largeTitle, weight: .bold))
                     }
-                    
                 }
             }
             
