@@ -25,25 +25,8 @@ struct DetailView: View {
                 .padding(.bottom)
             
             HStack {
+                creatureImage
                 
-                AsyncImage(url: URL(string: creatureDetail.imageUrl)) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .shadow(radius: 8, x: 5, y: 5)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(.gray.opacity(0.5), lineWidth: 1)
-                        }
-                } placeholder: {
-                    RoundedRectangle(cornerRadius: 10)
-                        .foregroundStyle(.clear)
-                }
-                .frame(width: 96, height: 96)
-                .padding(.trailing)
-
                 VStack(alignment: .leading) {
                     HStack (alignment: .top) {
                         Text("Height:")
@@ -76,6 +59,36 @@ struct DetailView: View {
             creatureDetail.urlString = creature.url
             await creatureDetail.getData()
         }
+    }
+}
+
+extension DetailView {
+    var creatureImage: some View {
+        AsyncImage(url: URL(string: creatureDetail.imageUrl)) { phase in
+            if let image = phase.image { // We've a valid image
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(radius: 8, x: 5, y: 5)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(.gray.opacity(0.5), lineWidth: 1)
+                    }
+                
+            } else if phase.error != nil { // We'va had an error
+                Image(systemName: "questionmark.square.dashed")
+                    .resizable()
+                    .scaledToFit()
+            } else { // Use a placehoser - image loading
+                ProgressView()
+                    .tint(.red)
+                    .scaleEffect(3.0)
+            }
+        }
+        .frame(width: 110, height: 110)
+        .padding(.trailing)
     }
 }
 
