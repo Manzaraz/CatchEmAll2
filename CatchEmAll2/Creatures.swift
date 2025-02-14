@@ -59,6 +59,15 @@ class Creatures {
             await getData() // get the next page of data
             await loadAll() // call loadAll again - will stop when all pages are retrieved
         }
+    }
+    
+    func loadNextIfNeeded(creature: Creature) async {
+        guard let lastCreature = creaturesArray.last else { return }
+        
+        if creature.id == lastCreature.id && urlString.hasPrefix("http") {
+            await getData()
+        }
+        
         
     }
 }
